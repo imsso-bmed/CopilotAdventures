@@ -1,0 +1,54 @@
+<!--
+루모리아 성계 행성 정렬 애니메이션 SVG
+행성들이 태양을 중심으로 정렬되며, 각 단계마다 그림자 변화가 시각적으로 표현됨
+-->
+<svg id="lumoria-animation" width="900" height="220" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .planet { transition: cx 1s linear; }
+    .shadow { transition: cx 1s linear, rx 1s linear; }
+    .label { font-size: 15px; fill: #222; text-anchor: middle; }
+    .au { font-size: 12px; fill: #555; text-anchor: middle; }
+    .sun-label { font-size: 20px; fill: #e6b800; text-anchor: middle; }
+  </style>
+  <circle cx="80" cy="110" r="36" fill="#ffe066" stroke="#e6b800" stroke-width="4" />
+  <text x="80" y="62" class="sun-label">☀️ Sun</text>
+  <!-- 행성 및 그림자: JS로 동적 생성됨 -->
+  <g id="planets"></g>
+  <g id="shadows"></g>
+  <script type="application/ecmascript"><![CDATA[
+    const planets = [
+      { name: 'Mercuria', distance: 0.4, diameter: 4879, color: '#f5c542' },
+      { name: 'Venusia', distance: 0.7, diameter: 12104, color: '#e08b2f' },
+      { name: 'Earthia', distance: 1.0, diameter: 12742, color: '#4fa3e3' },
+      { name: 'Marsia', distance: 1.5, diameter: 6779, color: '#b84fe3' }
+    ];
+    const width = 900, margin = 80, centerY = 110, maxDist = 1.5;
+    const getX = d => margin + (width - 2 * margin) * (d / maxDist);
+    const getR = d => Math.max(10, Math.min(32, d / 600));
+    const planetG = document.getElementById('planets');
+    const shadowG = document.getElementById('shadows');
+    // 정렬 단계별 애니메이션
+    let step = 0;
+    function draw(step) {
+      planetG.innerHTML = '';
+      shadowG.innerHTML = '';
+      for (let i = 0; i <= step; i++) {
+        const p = planets[i];
+        const x = getX(p.distance);
+        const r = getR(p.diameter);
+        // 그림자(단순화: 태양~행성 뒤 타원)
+        shadowG.innerHTML += `<ellipse class='shadow' cx='${x + r + 40}' cy='${centerY}' rx='30' ry='${r * 0.7}' fill='#222' fill-opacity='0.18' />`;
+        planetG.innerHTML += `<circle class='planet' cx='${x}' cy='${centerY}' r='${r}' fill='${p.color}' stroke='#333' stroke-width='2' />`;
+        planetG.innerHTML += `<text class='label' x='${x}' y='${centerY + r + 20}'>${p.name}</text>`;
+        planetG.innerHTML += `<text class='au' x='${x}' y='${centerY - r - 10}'>${p.distance} AU</text>`;
+      }
+    }
+    function animate() {
+      if (step > planets.length - 1) return;
+      draw(step);
+      step++;
+      setTimeout(animate, 1200);
+    }
+    animate();
+  ]]></script>
+</svg>

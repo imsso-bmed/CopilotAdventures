@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="220" xmlns="http://www.w3.org/2000/svg">
+<circle cx="80" cy="110" r="36" fill="#ffe066" stroke="#e6b800" stroke-width="4" />
+<text x="80" y="62" text-anchor="middle" font-size="20" fill="#e6b800">☀️ Sun</text>
+<ellipse cx="437.925925925926" cy="110" rx="160.59259259259264" ry="7" fill="#222" fill-opacity="0.18" />
+<circle cx="277.33333333333337" cy="110" r="10" fill="#f5c542" stroke="#333" stroke-width="2" />
+<text x="277.33333333333337" y="140" text-anchor="middle" font-size="15" fill="#222">Mercuria</text>
+<text x="277.33333333333337" y="90" text-anchor="middle" font-size="12" fill="#555">0.4 AU</text>
+<ellipse cx="891.0653827160493" cy="110" rx="465.732049382716" ry="14.12133333333333" fill="#222" fill-opacity="0.18" />
+<circle cx="425.3333333333333" cy="110" r="20.173333333333332" fill="#e08b2f" stroke="#333" stroke-width="2" />
+<text x="425.3333333333333" y="150.17333333333335" text-anchor="middle" font-size="15" fill="#222">Venusia</text>
+<text x="425.3333333333333" y="79.82666666666667" text-anchor="middle" font-size="12" fill="#555">0.7 AU</text>
+<ellipse cx="1253.5795061728395" cy="110" rx="680.2461728395061" ry="14.865666666666666" fill="#222" fill-opacity="0.18" />
+<circle cx="573.3333333333333" cy="110" r="21.236666666666668" fill="#4fa3e3" stroke="#333" stroke-width="2" />
+<text x="573.3333333333333" y="151.23666666666668" text-anchor="middle" font-size="15" fill="#222">Earthia</text>
+<text x="573.3333333333333" y="78.76333333333334" text-anchor="middle" font-size="12" fill="#555">1 AU</text>
+<ellipse cx="1370.9357407407408" cy="110" rx="550.9357407407408" ry="7.908833333333333" fill="#222" fill-opacity="0.18" />
+<circle cx="820" cy="110" r="11.298333333333334" fill="#b84fe3" stroke="#333" stroke-width="2" />
+<text x="820" y="141.29833333333335" text-anchor="middle" font-size="15" fill="#222">Marsia</text>
+<text x="820" y="88.70166666666667" text-anchor="middle" font-size="12" fill="#555">1.5 AU</text>
+</svg>
