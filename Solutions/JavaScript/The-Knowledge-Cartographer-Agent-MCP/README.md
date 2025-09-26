@@ -1,51 +1,89 @@
 # The Knowledge Cartographer - Agent Mode + MCP Solution
 
-This JavaScript application demonstrates the **correct approach** for working with GitHub Copilot Agent Mode + MCP tools. It reads and analyzes knowledge data that was already created by MCP tools.
+This JavaScript application demonstrates the **correct approach** for working with GitHub Copilot Agent Mode + MCP tools, including comprehensive error resolution for Firecrawl MCP issues.
 
-## What This Demonstrates
+## 🚨 Firecrawl MCP Error Resolution
 
-This solution shows the **correct architecture** for MCP + Agent Mode applications:
+### The $dynamicRef Schema Error
 
-- **MCP Tools Do The Work**: FireCrawl scrapes web content, File System MCP organizes files
-- **Your Application Reads Results**: Focus on analyzing the data MCP tools already created  
-- **Clean Separation**: MCP handles external operations, your app provides domain logic
-- **Proper Data Flow**: MCP → Files → Your Application (not MCP → Your Application)
+If you encounter errors like:
+```
+JSON schema validation failed: $dynamicRef feature not supported
+Schema parsing error in firecrawl_scrape tool
+MCP tool initialization failure
+```
+
+This is a **known compatibility issue** with Firecrawl MCP's use of advanced JSON schema features that aren't supported in all environments.
+
+### Quick Fix Commands
+
+```bash
+# 1. Run diagnostics to identify the issue
+npm run diagnostics
+
+# 2. Use fallback scraping if MCP fails
+npm run fallback
+
+# 3. Test the error resolution
+npm test
+
+# 4. Get comprehensive help
+npm run help
+```
+
+### Resolution Strategies
+
+1. **Environment Update**: Update VS Code and GitHub Copilot to latest versions
+2. **Alternative Configuration**: Use simplified MCP settings
+3. **Fallback Implementation**: Direct web scraping when MCP fails
+4. **Diagnostic Tools**: Identify and resolve specific issues
 
 ## Features
 
-🔍 **Knowledge Base Reader**
+### 🔧 Error Resolution Tools
+- **MCP Diagnostics**: Comprehensive environment and connection testing
+- **Fallback Scraping**: Alternative web scraping when MCP fails
+- **Error Detection**: Automatic identification of MCP schema issues
+- **Recovery Options**: Multiple strategies for continuing work
+
+### 🔍 Core Knowledge Features
 - Reads structured data files created by MCP tools
 - Loads entities, relationships, and source information
 - Supports multiple knowledge domains/topics
-
-🕸️ **Knowledge Graph Analysis**  
-- Analyzes relationships between entities
-- Identifies connection patterns and strengths
-- Explores concept clusters and associations
-
-📚 **Archive Management**
-- Detects existing knowledge archives
-- Lists available topics and domains
-- Loads specific knowledge areas on demand
-
-🎮 **Interactive Exploration CLI**
-- Browse knowledge domains interactively
-- Find entity connections and relationships
-- Explore source materials and metadata
+- Knowledge graph analysis and relationship mapping
+- Interactive exploration CLI
 
 ## Usage
 
-### Explore Existing Knowledge Archives
+### Basic Exploration
 ```bash
-# Load and explore a specific knowledge domain
+# Explore a knowledge domain
 node The-Knowledge-Cartographer-Agent-MCP.js "quantum computing"
-node The-Knowledge-Cartographer-Agent-MCP.js "artificial intelligence"
+
+# Interactive mode
+node The-Knowledge-Cartographer-Agent-MCP.js --interactive
 ```
 
-### Interactive Archive Exploration
+### Error Resolution
 ```bash
-# Enter interactive exploration mode
-node The-Knowledge-Cartographer-Agent-MCP.js --interactive
+# Run full MCP diagnostics
+node The-Knowledge-Cartographer-Agent-MCP.js --diagnostics
+
+# Use fallback scraping for a topic
+node The-Knowledge-Cartographer-Agent-MCP.js --use-fallback "quantum computing"
+
+# Get help with error resolution
+node The-Knowledge-Cartographer-Agent-MCP.js --help
+```
+
+### Available Scripts
+```bash
+npm start              # Run knowledge cartographer
+npm run interactive    # Interactive exploration mode
+npm run diagnostics    # Run MCP diagnostics
+npm run fallback       # Use fallback scraping
+npm run fix-mcp        # Comprehensive MCP troubleshooting
+npm test              # Run error resolution tests
 ```
 
 ### Interactive Commands

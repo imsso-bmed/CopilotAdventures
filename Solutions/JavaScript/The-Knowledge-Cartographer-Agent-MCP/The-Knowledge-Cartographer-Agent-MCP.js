@@ -14,11 +14,17 @@
  * - Knowledge graph analysis of the existing data
  * - Interactive exploration of the knowledge base
  * - Relationship discovery and visualization
+ * - Error handling for Firecrawl MCP $dynamicRef issues
+ * - Fallback solutions when MCP tools are unavailable
  */
 
 const fs = require('fs').promises;
 const path = require('path');
 const readline = require('readline');
+
+// Import fallback tools for MCP error resolution
+const FirecrawlFallback = require('./firecrawl-fallback.js');
+const MCPDiagnostics = require('./mcp-diagnostics.js');
 
 class KnowledgeCartographer {
     constructor() {
@@ -71,6 +77,137 @@ Your task: Navigate this treasure trove of interconnected wisdom.
             await this.createSampleArchive();
             return true;
         }
+    }
+
+    /**
+     * Handle MCP errors and provide fallback solutions
+     */
+    async handleMCPError(error, topic = null) {
+        console.log(`\n🚨 MCP Error Detected: ${error.message}\n`);
+        
+        if (error.message.includes('$dynamicRef') || error.message.includes('schema')) {
+            console.log('🔍 This appears to be the Firecrawl MCP $dynamicRef schema error.');
+            console.log('💡 This is a known compatibility issue with JSON schema validation.\n');
+            
+            console.log('🛠️  Available Solutions:');
+            console.log('1. Run MCP diagnostics: node mcp-diagnostics.js');
+            console.log('2. Use fallback scraping: node firecrawl-fallback.js');
+            console.log('3. Update VS Code and GitHub Copilot extensions');
+            console.log('4. Try alternative MCP configuration\n');
+            
+            // Skip user prompts if in test mode
+            if (process.env.NODE_ENV === 'test' || process.argv.includes('--no-prompt')) {
+                console.log('ℹ️  Skipping interactive prompts (test mode)');
+                return;
+            }
+            
+            // Offer to run diagnostics
+            const runDiagnostics = await this.promptUser('Would you like to run MCP diagnostics now? (y/n): ');
+            if (runDiagnostics.toLowerCase() === 'y') {
+                await this.runMCPDiagnostics();
+            }
+            
+            // Offer fallback scraping if topic is provided
+            if (topic) {
+                const useFallback = await this.promptUser(`Would you like to use fallback scraping for "${topic}"? (y/n): `);
+                if (useFallback.toLowerCase() === 'y') {
+                    await this.runFallbackScraping(topic);
+                }
+            }
+        } else {
+            console.log('🔍 This appears to be a general MCP connectivity issue.');
+            console.log('💡 Check your MCP configuration and network connection.\n');
+            
+            console.log('🛠️  Troubleshooting Steps:');
+            console.log('1. Check .vscode/mcp.json configuration');
+            console.log('2. Verify API keys and credentials');
+            console.log('3. Test network connectivity');
+            console.log('4. Run: node mcp-diagnostics.js\n');
+        }
+    }
+
+    /**
+     * Run MCP diagnostics tool
+     */
+    async runMCPDiagnostics() {
+        console.log('🔧 Running MCP Diagnostics...\n');
+        try {
+            const diagnostics = new MCPDiagnostics();
+            await diagnostics.runDiagnostics();
+        } catch (error) {
+            console.error('❌ Diagnostics failed:', error.message);
+        }
+    }
+
+    /**
+     * Run fallback scraping for a topic
+     */
+    async runFallbackScraping(topic) {
+        console.log(`🔄 Running fallback scraping for topic: ${topic}\n`);
+        
+        try {
+            const fallback = new FirecrawlFallback({ baseDir: this.baseDir });
+            
+            // Demo URLs for the topic
+            const demoUrls = this.getDemoUrls(topic);
+            console.log(`📡 Attempting to scrape ${demoUrls.length} URLs...`);
+            
+            const results = await fallback.scrapeUrls(demoUrls);
+            const archive = await fallback.createKnowledgeArchive(topic, results);
+            
+            console.log(`✅ Fallback scraping completed!`);
+            console.log(`📚 Knowledge archive created: ${archive.slug}`);
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Fallback scraping failed:', error.message);
+            return false;
+        }
+    }
+
+    /**
+     * Get demo URLs for a topic (for fallback scraping)
+     */
+    getDemoUrls(topic) {
+        const urlMap = {
+            'quantum-computing': [
+                'https://en.wikipedia.org/wiki/Quantum_computing',
+                'https://www.ibm.com/quantum-computing/',
+                'https://quantum-computing.ibm.com/lab'
+            ],
+            'artificial-intelligence': [
+                'https://en.wikipedia.org/wiki/Artificial_intelligence',
+                'https://ai.google/',
+                'https://openai.com/research'
+            ],
+            'machine-learning': [
+                'https://en.wikipedia.org/wiki/Machine_learning',
+                'https://scikit-learn.org/',
+                'https://tensorflow.org/'
+            ]
+        };
+        
+        return urlMap[topic] || [
+            `https://en.wikipedia.org/wiki/${topic.replace(/\s+/g, '_')}`,
+            `https://www.google.com/search?q=${encodeURIComponent(topic)}`
+        ];
+    }
+
+    /**
+     * Prompt user for input
+     */
+    async promptUser(question) {
+        const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
+        
+        return new Promise((resolve) => {
+            rl.question(question, (answer) => {
+                rl.close();
+                resolve(answer);
+            });
+        });
     }
 
     async createSampleArchive() {
@@ -470,30 +607,76 @@ Examples:
 async function main() {
     const cartographer = new KnowledgeCartographer();
 
-    cartographer.displayWelcome();
-
-    const archivesReady = await cartographer.checkArchiveStatus();
-
-    if (!archivesReady) {
-        console.log('❌ Cannot proceed without knowledge archives.');
+    // Check for special command line flags
+    if (process.argv.includes('--diagnostics') || process.argv.includes('-d')) {
+        console.log('🔧 Running MCP Diagnostics Tool...\n');
+        await cartographer.runMCPDiagnostics();
+        return;
+    }
+    
+    if (process.argv.includes('--use-fallback') || process.argv.includes('-f')) {
+        const topic = process.argv.find(arg => !arg.startsWith('-') && arg !== 'node' && !arg.endsWith('.js')) || 'quantum-computing';
+        console.log(`🔄 Using fallback scraping for topic: ${topic}\n`);
+        const success = await cartographer.runFallbackScraping(topic);
+        if (success) {
+            console.log('\n📚 Fallback scraping completed. You can now explore the archives:');
+            console.log(`node The-Knowledge-Cartographer-Agent-MCP.js "${topic}"`);
+        }
+        return;
+    }
+    
+    if (process.argv.includes('--help') || process.argv.includes('-h')) {
+        console.log('🗺️  Knowledge Cartographer - MCP Error Resolution Helper\n');
+        console.log('Usage:');
+        console.log('  node The-Knowledge-Cartographer-Agent-MCP.js [topic]              # Explore archives');
+        console.log('  node The-Knowledge-Cartographer-Agent-MCP.js --interactive        # Interactive mode');
+        console.log('  node The-Knowledge-Cartographer-Agent-MCP.js --diagnostics        # Run MCP diagnostics');
+        console.log('  node The-Knowledge-Cartographer-Agent-MCP.js --use-fallback [topic] # Use fallback scraping');
+        console.log('  node The-Knowledge-Cartographer-Agent-MCP.js --help               # Show this help\n');
+        console.log('MCP Error Resolution:');
+        console.log('  If you encounter Firecrawl MCP $dynamicRef errors:');
+        console.log('  1. Run diagnostics first: --diagnostics');
+        console.log('  2. Try fallback scraping: --use-fallback');
+        console.log('  3. Update VS Code and GitHub Copilot extensions');
         return;
     }
 
-    if (process.argv.includes('--interactive') || process.argv.includes('-i')) {
-        await cartographer.interactiveMode();
-    } else {
-        // Auto-load and explore a topic if specified
-        const topicArg = process.argv[2];
-        if (topicArg) {
-            const topic = topicArg.toLowerCase().replace(/\s+/g, '-');
-            const loaded = await cartographer.loadTopic(topic);
-            if (loaded) {
-                cartographer.displayTopicOverview();
-            }
+    cartographer.displayWelcome();
+
+    try {
+        const archivesReady = await cartographer.checkArchiveStatus();
+
+        if (!archivesReady) {
+            console.log('❌ Cannot proceed without knowledge archives.');
+            return;
+        }
+
+        if (process.argv.includes('--interactive') || process.argv.includes('-i')) {
+            await cartographer.interactiveMode();
         } else {
-            console.log(`💡 Try these commands:`);
-            console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js "quantum computing"`);
-            console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js --interactive`);
+            // Auto-load and explore a topic if specified
+            const topicArg = process.argv[2];
+            if (topicArg && !topicArg.startsWith('-')) {
+                const topic = topicArg.toLowerCase().replace(/\s+/g, '-');
+                const loaded = await cartographer.loadTopic(topic);
+                if (loaded) {
+                    cartographer.displayTopicOverview();
+                }
+            } else {
+                console.log(`💡 Try these commands:`);
+                console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js "quantum computing"`);
+                console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js --interactive`);
+                console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js --diagnostics (for MCP troubleshooting)`);
+                console.log(`• node The-Knowledge-Cartographer-Agent-MCP.js --use-fallback (for MCP error resolution)`);
+            }
+        }
+    } catch (error) {
+        // Handle MCP-related errors
+        if (error.message.includes('MCP') || error.message.includes('firecrawl') || error.message.includes('$dynamicRef')) {
+            await cartographer.handleMCPError(error, process.argv[2]);
+        } else {
+            console.error('❌ An unexpected error occurred:', error.message);
+            console.log('\n💡 Try running diagnostics: node The-Knowledge-Cartographer-Agent-MCP.js --diagnostics');
         }
     }
 }
