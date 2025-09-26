@@ -615,7 +615,13 @@ async function main() {
     }
     
     if (process.argv.includes('--use-fallback') || process.argv.includes('-f')) {
-        const topic = process.argv.find(arg => !arg.startsWith('-') && arg !== 'node' && !arg.endsWith('.js')) || 'quantum-computing';
+        const argIndex = Math.max(
+            process.argv.indexOf('--use-fallback'),
+            process.argv.indexOf('-f')
+        );
+        const topic = process.argv[argIndex + 1] && !process.argv[argIndex + 1].startsWith('-') 
+            ? process.argv[argIndex + 1] 
+            : 'quantum-computing';
         console.log(`🔄 Using fallback scraping for topic: ${topic}\n`);
         const success = await cartographer.runFallbackScraping(topic);
         if (success) {

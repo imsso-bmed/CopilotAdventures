@@ -301,6 +301,45 @@ If MCP tools aren't working:
 2. **Verify GitHub Copilot**: Confirm GitHub Copilot is enabled and configured correctly
 3. **Review MCP configuration**: Check your MCP server configurations
 
+### 🚨 Firecrawl MCP Error Resolution
+
+**Common Issue**: `$dynamicRef feature not supported` error
+
+If you encounter the Firecrawl MCP schema error, the solution includes comprehensive error resolution tools:
+
+#### Quick Resolution Commands
+```bash
+# Navigate to the solution directory
+cd Solutions/JavaScript/The-Knowledge-Cartographer-Agent-MCP
+
+# Run diagnostics to identify issues
+npm run diagnostics
+
+# Use fallback scraping when MCP fails  
+npm run fallback
+
+# Test error resolution functionality
+npm test
+
+# View comprehensive help
+npm run help
+```
+
+#### What the Error Resolution Includes
+- **🔧 MCP Diagnostics Tool**: Comprehensive environment and connection testing
+- **🔄 Fallback Implementation**: Alternative web scraping when MCP fails
+- **📋 Error Detection**: Automatic identification of MCP schema issues
+- **🛠️ Recovery Options**: Multiple strategies for continuing work
+- **📚 Knowledge Archive Creation**: Maintains same data structure as MCP tools
+
+#### Resolution Strategies
+1. **Environment Update**: Update VS Code and GitHub Copilot extensions
+2. **Alternative MCP Configuration**: Use error-resistant settings (see updated `.vscode/mcp.json`)
+3. **Fallback Implementation**: Direct web scraping with same data output format
+4. **Diagnostic Tools**: Identify and resolve specific environment issues
+
+The error resolution system ensures you can continue working even when MCP tools encounter compatibility issues.
+
 ### What's Next?
 
 After using Agent Mode with MCP through this adventure:

@@ -87,7 +87,8 @@ class FirecrawlFallback {
         
         try {
             // Create directory structure
-            const topicDir = path.join(this.baseDir, 'topics', topic.toLowerCase().replace(/\s+/g, '-'));
+            const topicSlug = topic.toLowerCase().replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '-');
+            const topicDir = path.join(this.baseDir, 'topics', topicSlug);
             await fs.mkdir(topicDir, { recursive: true });
             
             // Extract entities and relationships from scraped content
@@ -117,7 +118,7 @@ class FirecrawlFallback {
             
             const topicIndex = {
                 name: topic,
-                slug: topic.toLowerCase().replace(/\s+/g, '-'),
+                slug: topicSlug,
                 created: new Date().toISOString(),
                 entityCount: Object.keys(entities).length,
                 relationshipCount: Object.keys(relationships).length,
