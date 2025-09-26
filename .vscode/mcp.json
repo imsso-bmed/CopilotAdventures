@@ -7,7 +7,19 @@
             "firecrawl-mcp"
          ],
          "env": {
-            "FIRECRAWL_API_KEY": "${input:fireCrawlApiKey}"
+            "FIRECRAWL_API_KEY": "${input:fireCrawlApiKey}",
+            "FIRECRAWL_SCHEMA_MODE": "basic"
+         }
+      },
+      "firecrawl-fallback": {
+         "command": "npx",
+         "args": [
+            "-y",
+            "firecrawl-mcp@latest"
+         ],
+         "env": {
+            "FIRECRAWL_API_KEY": "${input:fireCrawlApiKey}",
+            "FIRECRAWL_COMPATIBILITY_MODE": "legacy"
          }
       },
       "filesystem": {

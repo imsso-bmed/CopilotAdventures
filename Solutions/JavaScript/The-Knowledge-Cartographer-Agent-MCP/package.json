@@ -1,0 +1,33 @@
+{
+  "name": "knowledge-cartographer-mcp",
+  "version": "1.0.0",
+  "description": "Knowledge Cartographer with Firecrawl MCP error resolution and fallback support",
+  "type": "commonjs",
+  "main": "The-Knowledge-Cartographer-Agent-MCP.js",
+  "scripts": {
+    "start": "node The-Knowledge-Cartographer-Agent-MCP.js",
+    "interactive": "node The-Knowledge-Cartographer-Agent-MCP.js --interactive",
+    "diagnostics": "node mcp-diagnostics.js",
+    "fallback": "node firecrawl-fallback.js",
+    "help": "node The-Knowledge-Cartographer-Agent-MCP.js --help",
+    "quantum": "node The-Knowledge-Cartographer-Agent-MCP.js 'quantum computing'",
+    "ai": "node The-Knowledge-Cartographer-Agent-MCP.js 'artificial intelligence'",
+    "fix-mcp": "npm run diagnostics && echo '\nIf issues persist, try: npm run fallback'",
+    "test": "node error-resolution.test.js",
+    "demo": "node demo-error-resolution.js"
+  },
+  "keywords": [
+    "knowledge-graph", 
+    "mcp", 
+    "firecrawl", 
+    "error-resolution", 
+    "web-scraping", 
+    "copilot", 
+    "agent-mode"
+  ],
+  "author": "CopilotAdventures",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
